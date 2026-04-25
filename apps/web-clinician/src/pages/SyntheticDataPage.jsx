@@ -80,7 +80,7 @@ function SyntheticDataPage() {
   return (
     <>
       {errMsg ? (
-        <div className="p-3.5 px-[18px] rounded-[14px] bg-[rgba(248,113,113,0.08)] border border-[rgba(248,113,113,0.25)] text-[#fca5a5] text-[0.9rem]">
+        <div className="p-3.5 px-[18] rounded-[14px] bg-[rgba(248,113,113,0.08)] border border-[rgba(248,113,113,0.25)] text-[#fca5a5] text-[0.9rem]">
           {errMsg}
         </div>
       ) : null}
