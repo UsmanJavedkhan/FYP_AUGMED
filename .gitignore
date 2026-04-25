@@ -1,0 +1,48 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Node
+node_modules/
+dist/
+build/
+.next/
+.turbo/
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.*
+
+# Data / models / outputs
+data/raw/
+data/processed/
+models/checkpoints/
+artifacts/
+uploads/
+reports/
+storage/augmed.db
+storage/uploads/*
+storage/artifacts/*
+storage/reports/*
+!storage/uploads/.gitkeep
+!storage/artifacts/.gitkeep
+!storage/reports/.gitkeep
+
+# Coverage
+.coverage
+coverage/

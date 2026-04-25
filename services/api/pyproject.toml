@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "augmed-api"
+version = "0.1.0"
+description = "FastAPI foundation for the AugMed chest X-ray workflow."
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+  "fastapi>=0.115,<0.116",
+  "uvicorn[standard]>=0.34,<0.35",
+  "sqlalchemy>=2.0,<2.1",
+  "pydantic-settings>=2.9,<3.0",
+  "python-multipart>=0.0.9,<0.0.11",
+  "pillow>=11.2,<12.0"
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
