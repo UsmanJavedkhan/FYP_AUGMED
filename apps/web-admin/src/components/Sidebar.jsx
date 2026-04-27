@@ -2,10 +2,10 @@
 const navItems = [
   { id: 'overview', label: 'Overview' },
   { id: 'users', label: 'Users & Roles' },
-  { id: 'datasets', label: 'Datasets', disabled: true },
-  { id: 'models', label: 'Model Registry', disabled: true },
-  { id: 'jobs', label: 'Background Jobs', disabled: true },
-  { id: 'audit', label: 'Audit Logs', disabled: true },
+  { id: 'datasets', label: 'Datasets'},
+  { id: 'models', label: 'Model Registry' },
+  { id: 'jobs', label: 'Background Jobs'},
+  { id: 'audit', label: 'Audit Logs'},
 ]
 
 function Sidebar({ activePage, onNavigate }) {

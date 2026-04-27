@@ -175,6 +175,7 @@ function App() {
                     onSubmitReview={doReview}
                     onRefresh={() => void loadEverything()}
                     reviewerDefault={user?.full_name}
+                    canReview={user?.role === 'reviewer'}
                   />
                 </div>
               </section>

@@ -18,7 +18,7 @@ function getPillStyle(status) {
   return 'bg-[rgba(148,163,184,0.12)] text-[#cbd5e1] border-[rgba(148,163,184,0.14)]'
 }
 
-function CaseList({ caseData, pickedId, onPick, onExport }) {
+function CaseList({ caseData, pickedId, onPick }) {
   return (
     <div className="bg-[rgba(18,26,46,0.72)] border border-[rgba(148,163,184,0.14)] rounded-[22px] p-6 shadow-[0_22px_48px_-20px_rgba(0,0,0,0.55)]">
       <div className="flex justify-between items-start gap-4 mb-4">
@@ -28,15 +28,7 @@ function CaseList({ caseData, pickedId, onPick, onExport }) {
             {caseData.length} case{caseData.length === 1 ? '' : 's'} in workspace
           </p>
         </div>
-        {caseData.length > 0 ? (
-          <button
-            className="bg-[rgba(255,255,255,0.04)] text-[#e6edf7] border border-[rgba(148,163,184,0.14)] rounded-xl py-3 px-[18px] font-semibold text-[0.92rem] cursor-pointer hover:bg-[rgba(255,255,255,0.07)]"
-            type="button"
-            onClick={onExport}
-          >
-            Export CSV
-          </button>
-        ) : null}
+      
       </div>
 
       <div className="flex flex-col gap-2.5 max-h-[560px] overflow-y-auto pr-1">

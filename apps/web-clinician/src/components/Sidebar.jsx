@@ -47,11 +47,7 @@ function Sidebar({ activePage = 'workspace', onNavigate }) {
         })}
       </nav>
 
-      {/* footer */}
-      <div className="mt-auto p-3.5 rounded-[14px] bg-[rgba(255,255,255,0.04)] border border-[rgba(148,163,184,0.14)] text-[0.82rem] text-[#8a97b1]">
-        <strong className="text-[#e6edf7] block mb-1">Local build</strong>
-        Running fully on-device. No external telemetry.
-      </div>
+   
     </aside>
   )
 }
