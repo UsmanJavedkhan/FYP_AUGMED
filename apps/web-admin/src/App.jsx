@@ -8,6 +8,10 @@ import Sidebar from './components/Sidebar'
 import Topbar from './components/Topbar'
 import OverviewPage from './pages/OverviewPage'
 import UsersPage from './pages/UsersPage'
+import DatasetsPage from './pages/DatasetsPage'
+import ModelsPage from './pages/ModelsPage'
+import JobsPage from './pages/JobsPage'
+import AuditPage from './pages/AuditPage'
 
 function App() {
   const { user, logout } = useAuth()
@@ -34,10 +38,15 @@ function App() {
   }, [])
 
   // pick the title shown in the topbar
-  const titleData =
-    activePage === 'users'
-      ? { title: 'Users & Roles', subtitle: 'Manage AugMed accounts, roles, and access.' }
-      : { title: 'Operational Overview', subtitle: 'Platform health, queues, and case audit activity.' }
+  const titles = {
+    overview: { title: 'Operational Overview', subtitle: 'Platform health, queues, and case audit activity.' },
+    users: { title: 'Users & Roles', subtitle: 'Manage AugMed accounts, roles, and access.' },
+    datasets: { title: 'Datasets', subtitle: 'Registered datasets used for training and evaluation.' },
+    models: { title: 'Model Registry', subtitle: 'Track model versions, accuracy, and which one is active.' },
+    jobs: { title: 'Background Jobs', subtitle: 'Inference, training, and report jobs running in the system.' },
+    audit: { title: 'Audit Logs', subtitle: 'Audit trail of every action taken in AugMed.' },
+  }
+  const titleData = titles[activePage] || titles.overview
 
   return (
     <div className="grid grid-cols-[260px_1fr] min-h-screen max-[820px]:grid-cols-1">
@@ -60,6 +69,14 @@ function App() {
           {activePage === 'users' && user ? (
             <UsersPage currentUserId={user.id} />
           ) : null}
+
+          {activePage === 'datasets' ? <DatasetsPage /> : null}
+
+          {activePage === 'models' ? <ModelsPage /> : null}
+
+          {activePage === 'jobs' ? <JobsPage /> : null}
+
+          {activePage === 'audit' ? <AuditPage /> : null}
         </main>
       </div>
     </div>

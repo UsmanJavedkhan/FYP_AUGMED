@@ -12,6 +12,10 @@ import CaseList from './components/CaseList'
 import CaseViewer from './components/CaseViewer'
 import ReviewForm from './components/ReviewForm'
 import SyntheticDataPage from './pages/SyntheticDataPage'
+import CasesPage from './pages/CasesPage'
+import ReportsPage from './pages/ReportsPage'
+import SettingsPage from './pages/SettingsPage'
+import DatasetsPage from './pages/DatasetsPage'
 
 function App() {
   const { user, logout } = useAuth()
@@ -118,6 +122,24 @@ function App() {
     window.open(url, '_blank')
   }
 
+  // download report by case id (used from Reports page)
+  async function doDownloadReportById(caseId) {
+    setErrMsg(null)
+    try {
+      const blob = await generateReport(caseId)
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `augmed-report-${caseId.slice(0, 12)}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      URL.revokeObjectURL(url)
+    } catch (err) {
+      setErrMsg(err instanceof Error ? err.message : 'Report generation failed.')
+    }
+  }
+
   // calculate stats from cases
   const stats = useMemo(() => {
     const total = allCases.length
@@ -184,12 +206,15 @@ function App() {
 
           {activePage === 'synthetic' ? <SyntheticDataPage /> : null}
 
-          {activePage !== 'workspace' && activePage !== 'synthetic' ? (
-            <div className="p-10 rounded-[18px] border border-dashed border-[rgba(148,163,184,0.2)] text-center text-[#8a97b1]">
-              <div className="text-[#e6edf7] font-semibold mb-1">Coming soon</div>
-              <div className="text-[0.85rem]">This section isn't wired up yet.</div>
-            </div>
+          {activePage === 'cases' ? <CasesPage cases={allCases} /> : null}
+
+          {activePage === 'reports' ? (
+            <ReportsPage cases={allCases} onDownloadReport={doDownloadReportById} />
           ) : null}
+
+          {activePage === 'datasets' ? <DatasetsPage /> : null}
+
+          {activePage === 'settings' ? <SettingsPage user={user} /> : null}
         </main>
       </div>
     </div>

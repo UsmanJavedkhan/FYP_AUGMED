@@ -3,6 +3,7 @@
 Thumbs.db
 .vscode/
 .idea/
+.claude/
 
 # Python
 __pycache__/
@@ -32,9 +33,9 @@ build/
 data/raw/
 data/processed/
 models/checkpoints/
-artifacts/
-uploads/
-reports/
+/artifacts/
+/uploads/
+/reports/
 storage/augmed.db
 storage/uploads/*
 storage/artifacts/*

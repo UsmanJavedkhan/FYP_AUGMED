@@ -118,9 +118,7 @@ function SyntheticDataPage() {
         >
           <div>
             <h2 className="m-0 text-[1.05rem] font-bold tracking-tight">Synthetic Generator</h2>
-            <p className="mt-1 mb-0 text-[0.83rem] text-[#8a97b1]">
-              DCGAN trained on healthy chest X-rays · 256×256 grayscale · pneumonia/TB/COVID models not yet wired.
-            </p>
+           
           </div>
 
           <div className="grid gap-1.5">
