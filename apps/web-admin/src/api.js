@@ -96,14 +96,10 @@ export async function fetchModels() {
   return data.items
 }
 
-// ---------- Background jobs ----------
+// ---------- Operations history (jobs) ----------
 export async function fetchJobs() {
   const data = await apiFetch('/admin/jobs')
   return data.items
-}
-
-export function retryJob(jobId) {
-  return apiFetch(`/admin/jobs/${jobId}/retry`, { method: 'POST' })
 }
 
 // ---------- Audit logs ----------

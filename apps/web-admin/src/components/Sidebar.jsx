@@ -4,7 +4,7 @@ const navItems = [
   { id: 'users', label: 'Users & Roles' },
   { id: 'datasets', label: 'Datasets'},
   { id: 'models', label: 'Model Registry' },
-  { id: 'jobs', label: 'Background Jobs'},
+  { id: 'jobs', label: 'Operations History'},
   { id: 'audit', label: 'Audit Logs'},
 ]
 

@@ -202,13 +202,14 @@ _LEGACY_MODELS = [
     ("EfficientNet-B0", "v0.1"),
 ]
 
-_SEED_JOBS = [
-    # (name, type, status, progress)
-    ("Inference batch #142", "inference", "completed", 100),
-    ("Train DenseNet121 v1.1", "training", "queued", 0),
-    ("Generate synthetic batch #8", "synthetic", "completed", 100),
-    ("PDF report generation", "report", "failed", 35),
-]
+# Placeholder jobs from earlier seeds — removed on startup so the Jobs page
+# only shows real operation records created by record_job().
+_LEGACY_JOB_NAMES = (
+    "Inference batch #142",
+    "Train DenseNet121 v1.1",
+    "Generate synthetic batch #8",
+    "PDF report generation",
+)
 
 _SEED_AUDIT = [
     # (actor, action, target)
@@ -260,11 +261,12 @@ def seed_admin_data() -> None:
                     )
                 )
 
-        if session.scalar(select(Job.id).limit(1)) is None:
-            session.add_all(
-                Job(name=name, type=type_, status=status, progress=progress)
-                for name, type_, status, progress in _SEED_JOBS
-            )
+        # Remove seeded placeholder jobs — the Jobs page is a history of real
+        # operations recorded by record_job(), not pre-populated samples.
+        for job in session.scalars(
+            select(Job).where(Job.name.in_(_LEGACY_JOB_NAMES))
+        ).all():
+            session.delete(job)
 
         if session.scalar(select(AuditLog.id).limit(1)) is None:
             session.add_all(

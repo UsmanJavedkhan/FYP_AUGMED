@@ -43,7 +43,7 @@ function App() {
     users: { title: 'Users & Roles', subtitle: 'Manage AugMed accounts, roles, and access.' },
     datasets: { title: 'Datasets', subtitle: 'Registered datasets used for training and evaluation.' },
     models: { title: 'Model Registry', subtitle: 'Track model versions, accuracy, and which one is active.' },
-    jobs: { title: 'Background Jobs', subtitle: 'Inference, training, and report jobs running in the system.' },
+    jobs: { title: 'Operations History', subtitle: 'A log of completed ML operations — inference, synthetic generation, and reports.' },
     audit: { title: 'Audit Logs', subtitle: 'Audit trail of every action taken in AugMed.' },
   }
   const titleData = titles[activePage] || titles.overview

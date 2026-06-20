@@ -1,9 +1,9 @@
-// Background Jobs page - list of jobs with filters
+// Operations history - log of completed ML operations
 
 import { useEffect, useState } from 'react'
 import JobFilters from '../components/jobs/JobFilters'
 import JobRow from '../components/jobs/JobRow'
-import { fetchJobs, retryJob as retryJobApi } from '../api'
+import { fetchJobs } from '../api'
 
 // turn an ISO timestamp into a rough "x min ago" string
 function timeAgo(iso) {
@@ -30,7 +30,6 @@ function mapJob(j) {
 
 function JobsPage() {
   const [jobs, setJobs] = useState([])
-  const [status, setStatus] = useState('all')
   const [type, setType] = useState('all')
   const [err, setErr] = useState(null)
 
@@ -38,54 +37,35 @@ function JobsPage() {
   useEffect(() => {
     fetchJobs()
       .then((rows) => setJobs(rows.map(mapJob)))
-      .catch((e) => setErr(e instanceof Error ? e.message : 'Failed to load jobs.'))
+      .catch((e) => setErr(e instanceof Error ? e.message : 'Failed to load operations.'))
   }, [])
 
-  // filter jobs
-  const filtered = jobs.filter((j) => {
-    if (status !== 'all' && j.status !== status) return false
-    if (type !== 'all' && j.type !== type) return false
-    return true
-  })
-
-  // retry a failed job through the api
-  async function retryJob(id) {
-    setErr(null)
-    try {
-      const updated = await retryJobApi(id)
-      setJobs((prev) => prev.map((j) => (j.id === id ? mapJob(updated) : j)))
-    } catch (e) {
-      setErr(e instanceof Error ? e.message : 'Could not retry job.')
-    }
-  }
+  // filter by type
+  const filtered = jobs.filter((j) => type === 'all' || j.type === type)
 
   return (
     <section className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-      <h1 className="text-xl font-bold text-slate-800 mb-1">Background Jobs</h1>
+      <h1 className="text-xl font-bold text-slate-800 mb-1">Operations History</h1>
       <p className="text-sm text-slate-500 mb-5">
-        Showing {filtered.length} of {jobs.length} jobs.
+        A log of completed ML operations — inference, synthetic generation, and reports.
+        Showing {filtered.length} of {jobs.length}.
       </p>
 
       {err ? (
         <div className="text-sm text-red-600 mb-4">{err}</div>
       ) : null}
 
-      <JobFilters
-        status={status}
-        setStatus={setStatus}
-        type={type}
-        setType={setType}
-      />
+      <JobFilters type={type} setType={setType} />
 
-      {/* job list */}
+      {/* operations list */}
       {filtered.length === 0 ? (
         <div className="text-center text-slate-500 py-10 border border-dashed border-slate-300 rounded-lg">
-          No jobs match these filters.
+          No operations match this filter.
         </div>
       ) : (
         <div className="flex flex-col gap-3">
           {filtered.map((j) => (
-            <JobRow key={j.id} job={j} onRetry={retryJob} />
+            <JobRow key={j.id} job={j} />
           ))}
         </div>
       )}

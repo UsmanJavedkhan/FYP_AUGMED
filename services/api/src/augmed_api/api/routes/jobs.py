@@ -1,5 +1,5 @@
-"""Admin Background Jobs endpoints."""
-from fastapi import APIRouter, Depends, HTTPException, status
+"""Admin operations history (jobs) endpoints."""
+from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -25,21 +25,3 @@ def _to_read(j: Job) -> JobRead:
 def list_jobs(db: Session = Depends(get_db)) -> JobListResponse:
     jobs = db.scalars(select(Job).order_by(Job.created_at.desc())).all()
     return JobListResponse(items=[_to_read(j) for j in jobs])
-
-
-@router.post("/{job_id}/retry", response_model=JobRead)
-def retry_job(job_id: int, db: Session = Depends(get_db)) -> JobRead:
-    """Re-queue a failed job."""
-    job = db.get(Job, job_id)
-    if not job:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found.")
-    if job.status != "failed":
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Only failed jobs can be retried.",
-        )
-    job.status = "queued"
-    job.progress = 0
-    db.commit()
-    db.refresh(job)
-    return _to_read(job)
