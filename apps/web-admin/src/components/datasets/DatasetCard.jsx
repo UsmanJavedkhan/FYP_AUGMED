@@ -1,6 +1,6 @@
 // one dataset card in the grid
 
-function DatasetCard({ dataset }) {
+function DatasetCard({ dataset, onDelete }) {
   return (
     <div className="bg-white border border-slate-200 rounded-lg p-5 hover:shadow-md">
       {/* name + source */}
@@ -19,8 +19,10 @@ function DatasetCard({ dataset }) {
       {/* stats row */}
       <div className="grid grid-cols-2 gap-3 text-sm border-t border-slate-200 pt-3">
         <div>
-          <div className="text-xs text-slate-500">Items</div>
-          <div className="font-semibold text-slate-800">{dataset.itemCount}</div>
+          <div className="text-xs text-slate-500" title="Documented size of the dataset at its source — not a live file count.">
+            Items (reported)
+          </div>
+          <div className="font-semibold text-slate-800">{Number(dataset.itemCount).toLocaleString()}</div>
         </div>
         <div>
           <div className="text-xs text-slate-500">Updated</div>
@@ -30,17 +32,33 @@ function DatasetCard({ dataset }) {
 
       {/* action buttons */}
       <div className="flex gap-2 mt-4">
+        {dataset.sourceUrl ? (
+          <a
+            href={dataset.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 text-center px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs hover:bg-slate-200"
+          >
+            View source ↗
+          </a>
+        ) : (
+          <span
+            className="flex-1 text-center px-3 py-1.5 rounded-lg bg-slate-100 text-slate-400 text-xs cursor-not-allowed"
+            title="No source link recorded for this dataset."
+          >
+            No source link
+          </span>
+        )}
         <button
           type="button"
-          className="flex-1 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs hover:bg-slate-200"
+          onClick={() => {
+            if (window.confirm(`Remove "${dataset.name}" from the registry?`)) {
+              onDelete(dataset.id)
+            }
+          }}
+          className="flex-1 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs hover:bg-red-100"
         >
-          View items
-        </button>
-        <button
-          type="button"
-          className="flex-1 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs hover:bg-slate-200"
-        >
-          Edit
+          Delete
         </button>
       </div>
     </div>

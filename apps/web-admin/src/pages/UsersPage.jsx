@@ -51,6 +51,19 @@ function UsersPage({ currentUserId }) {
     }
   }
 
+  // save edited name / email; returns true so the row can exit edit mode
+  async function handleSaveProfile(user, changes) {
+    setErrMsg(null)
+    try {
+      await updateUser(user.id, changes)
+      await reload()
+      return true
+    } catch (err) {
+      setErrMsg(err instanceof Error ? err.message : 'Failed to update user.')
+      return false
+    }
+  }
+
   async function handleDelete(user) {
     if (user.id === currentUserId) return
     if (!confirm(`Delete ${user.email}?`)) return
@@ -79,6 +92,7 @@ function UsersPage({ currentUserId }) {
           onChangeRole={handleChangeRole}
           onToggleActive={handleToggleActive}
           onDelete={handleDelete}
+          onSaveProfile={handleSaveProfile}
         />
         <InviteForm onCreate={handleCreate} />
       </section>

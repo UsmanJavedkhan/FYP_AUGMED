@@ -1,35 +1,45 @@
 // Audit Logs page - paginated event stream
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import LogFilters from '../components/audit/LogFilters'
 import LogRow from '../components/audit/LogRow'
 import Pagination from '../components/audit/Pagination'
-
-// fake audit log data
-const ALL_LOGS = [
-  { id: 1, timestamp: '2026-04-27 14:22', actor: 'clinician@augmed.local', action: 'upload', target: 'case_a91b2' },
-  { id: 2, timestamp: '2026-04-27 14:25', actor: 'reviewer@augmed.local', action: 'review', target: 'case_a91b2' },
-  { id: 3, timestamp: '2026-04-27 14:28', actor: 'clinician@augmed.local', action: 'report', target: 'case_a91b2' },
-  { id: 4, timestamp: '2026-04-27 13:50', actor: 'admin@augmed.local', action: 'user_change', target: 'researcher@augmed.local' },
-  { id: 5, timestamp: '2026-04-27 13:42', actor: 'admin@augmed.local', action: 'login', target: '-' },
-  { id: 6, timestamp: '2026-04-27 12:30', actor: 'clinician@augmed.local', action: 'upload', target: 'case_b37c4' },
-  { id: 7, timestamp: '2026-04-27 12:35', actor: 'reviewer@augmed.local', action: 'review', target: 'case_b37c4' },
-  { id: 8, timestamp: '2026-04-27 11:14', actor: 'clinician@augmed.local', action: 'login', target: '-' },
-  { id: 9, timestamp: '2026-04-27 10:55', actor: 'admin@augmed.local', action: 'user_change', target: 'clinician@augmed.local' },
-  { id: 10, timestamp: '2026-04-27 09:20', actor: 'clinician@augmed.local', action: 'upload', target: 'case_c12d9' },
-  { id: 11, timestamp: '2026-04-27 09:24', actor: 'clinician@augmed.local', action: 'report', target: 'case_c12d9' },
-  { id: 12, timestamp: '2026-04-26 17:30', actor: 'reviewer@augmed.local', action: 'review', target: 'case_d44e1' },
-]
+import { fetchAuditLogs, downloadAuditCsv } from '../api'
 
 const PAGE_SIZE = 5
 
+// format an ISO timestamp like "2026-04-27 14:22"
+function formatTs(iso) {
+  if (!iso) return '-'
+  return iso.replace('T', ' ').slice(0, 16)
+}
+
 function AuditPage() {
+  const [logs, setLogs] = useState([])
   const [search, setSearch] = useState('')
   const [action, setAction] = useState('all')
   const [page, setPage] = useState(1)
+  const [err, setErr] = useState(null)
+
+  // load logs from the api on mount
+  useEffect(() => {
+    fetchAuditLogs()
+      .then((rows) =>
+        setLogs(
+          rows.map((l) => ({
+            id: l.id,
+            timestamp: formatTs(l.created_at),
+            actor: l.actor,
+            action: l.action,
+            target: l.target,
+          })),
+        ),
+      )
+      .catch((e) => setErr(e instanceof Error ? e.message : 'Failed to load audit logs.'))
+  }, [])
 
   // filter logs
-  const filtered = ALL_LOGS.filter((l) => {
+  const filtered = logs.filter((l) => {
     if (action !== 'all' && l.action !== action) return false
     if (search.trim() !== '') {
       const text = (l.actor + ' ' + l.target).toLowerCase()
@@ -43,9 +53,22 @@ function AuditPage() {
   const startIndex = (page - 1) * PAGE_SIZE
   const visible = filtered.slice(startIndex, startIndex + PAGE_SIZE)
 
-  // fake export - just shows an alert for now
-  function exportCsv() {
-    alert('CSV export not wired to backend yet.')
+  // download the audit trail as a csv from the backend
+  async function exportCsv() {
+    setErr(null)
+    try {
+      const blob = await downloadAuditCsv()
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = 'augmed-audit-export.csv'
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      URL.revokeObjectURL(url)
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'Export failed.')
+    }
   }
 
   return (
@@ -54,6 +77,10 @@ function AuditPage() {
       <p className="text-sm text-slate-500 mb-5">
         {filtered.length} events match · showing {visible.length} on this page.
       </p>
+
+      {err ? (
+        <div className="text-sm text-red-600 mb-4">{err}</div>
+      ) : null}
 
       <LogFilters
         search={search}

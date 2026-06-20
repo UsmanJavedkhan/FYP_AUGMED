@@ -49,11 +49,7 @@ function Sidebar({ activePage, onNavigate }) {
         })}
       </nav>
 
-      {/* footer */}
-      <div className="mt-auto p-3.5 rounded-[14px] bg-[#f3f6fa] border border-[#e4e9f0] text-[0.82rem] text-[#64748b]">
-        <strong className="text-[#0f172a] block mb-1">Phase 1 · Foundation</strong>
-        Local-first monorepo · FastAPI + React
-      </div>
+    
     </aside>
   )
 }

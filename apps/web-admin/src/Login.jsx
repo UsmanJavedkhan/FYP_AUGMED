@@ -38,7 +38,7 @@ export function LoginScreen() {
 
         <h1 className="m-0 text-[1.8rem] tracking-tight font-bold">Admin sign in</h1>
         <p className="mt-1.5 mb-6 text-[#64748b] text-[0.9rem]">
-          Administrator access to the AugMed control plane.
+          Administrator access to the AugMed control panel.
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 mb-5">
@@ -88,13 +88,13 @@ export function LoginScreen() {
         </form>
 
         {/* demo creds */}
-        <div className="px-4 py-3.5 bg-[#f3f6fa] border border-[#e4e9f0] rounded-xl text-[0.82rem] text-[#64748b] leading-7">
+        {/* <div className="px-4 py-3.5 bg-[#f3f6fa] border border-[#e4e9f0] rounded-xl text-[0.82rem] text-[#64748b] leading-7">
           <strong className="text-[#0f172a] block mb-1.5 text-[0.78rem] uppercase tracking-wider">
             Demo admin
           </strong>
           <div>admin@augmed.local</div>
           <div className="text-[#94a3b8] mt-1.5">password: augmed123</div>
-        </div>
+        </div> */}
       </div>
     </div>
   )

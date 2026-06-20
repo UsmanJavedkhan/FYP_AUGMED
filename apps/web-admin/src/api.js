@@ -75,3 +75,51 @@ export function updateUser(userId, payload) {
 export function deleteUser(userId) {
   return apiFetch(`/users/${userId}`, { method: 'DELETE' })
 }
+
+// ---------- Datasets ----------
+export async function fetchDatasets() {
+  const data = await apiFetch('/admin/datasets')
+  return data.items
+}
+
+export function createDataset(payload) {
+  return apiFetch('/admin/datasets', { method: 'POST', body: JSON.stringify(payload) })
+}
+
+export function deleteDataset(datasetId) {
+  return apiFetch(`/admin/datasets/${datasetId}`, { method: 'DELETE' })
+}
+
+// ---------- Model registry ----------
+export async function fetchModels() {
+  const data = await apiFetch('/admin/models')
+  return data.items
+}
+
+// ---------- Background jobs ----------
+export async function fetchJobs() {
+  const data = await apiFetch('/admin/jobs')
+  return data.items
+}
+
+export function retryJob(jobId) {
+  return apiFetch(`/admin/jobs/${jobId}/retry`, { method: 'POST' })
+}
+
+// ---------- Audit logs ----------
+export async function fetchAuditLogs() {
+  const data = await apiFetch('/admin/audit')
+  return data.items
+}
+
+// the csv route is auth-gated, so fetch it with the token and return a blob
+export async function downloadAuditCsv() {
+  const token = getStoredToken()
+  const headers = {}
+  if (token) headers['Authorization'] = `Bearer ${token}`
+  const response = await fetch(`${API_BASE_URL}/admin/audit/export/csv`, { headers })
+  if (!response.ok) {
+    throw new Error('Audit export failed')
+  }
+  return response.blob()
+}

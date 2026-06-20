@@ -1,57 +1,45 @@
 // Background Jobs page - list of jobs with filters
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import JobFilters from '../components/jobs/JobFilters'
 import JobRow from '../components/jobs/JobRow'
+import { fetchJobs, retryJob as retryJobApi } from '../api'
 
-// fake job data
-const INITIAL_JOBS = [
-  {
-    id: 1,
-    name: 'Inference batch #142',
-    type: 'inference',
-    status: 'running',
-    progress: 60,
-    startedAt: '2 min ago',
-  },
-  {
-    id: 2,
-    name: 'Train DenseNet121 v1.1',
-    type: 'training',
-    status: 'queued',
-    progress: 0,
-    startedAt: '5 min ago',
-  },
-  {
-    id: 3,
-    name: 'Generate synthetic batch #8',
-    type: 'synthetic',
-    status: 'completed',
-    progress: 100,
-    startedAt: '10 min ago',
-  },
-  {
-    id: 4,
-    name: 'PDF report generation',
-    type: 'report',
-    status: 'failed',
-    progress: 35,
-    startedAt: '15 min ago',
-  },
-  {
-    id: 5,
-    name: 'Inference batch #141',
-    type: 'inference',
-    status: 'completed',
-    progress: 100,
-    startedAt: '30 min ago',
-  },
-]
+// turn an ISO timestamp into a rough "x min ago" string
+function timeAgo(iso) {
+  if (!iso) return '-'
+  const diffMs = Date.now() - new Date(iso).getTime()
+  const mins = Math.round(diffMs / 60000)
+  if (mins < 1) return 'just now'
+  if (mins < 60) return `${mins} min ago`
+  const hours = Math.round(mins / 60)
+  if (hours < 24) return `${hours} hr ago`
+  return `${Math.round(hours / 24)} d ago`
+}
+
+function mapJob(j) {
+  return {
+    id: j.id,
+    name: j.name,
+    type: j.type,
+    status: j.status,
+    progress: j.progress,
+    startedAt: timeAgo(j.created_at),
+  }
+}
 
 function JobsPage() {
-  const [jobs, setJobs] = useState(INITIAL_JOBS)
+  const [jobs, setJobs] = useState([])
   const [status, setStatus] = useState('all')
   const [type, setType] = useState('all')
+  const [err, setErr] = useState(null)
+
+  // load jobs from the api on mount
+  useEffect(() => {
+    fetchJobs()
+      .then((rows) => setJobs(rows.map(mapJob)))
+      .catch((e) => setErr(e instanceof Error ? e.message : 'Failed to load jobs.'))
+  }, [])
 
   // filter jobs
   const filtered = jobs.filter((j) => {
@@ -60,13 +48,15 @@ function JobsPage() {
     return true
   })
 
-  // retry a failed job - just reset to queued
-  function retryJob(id) {
-    setJobs((prev) =>
-      prev.map((j) =>
-        j.id === id ? { ...j, status: 'queued', progress: 0 } : j,
-      ),
-    )
+  // retry a failed job through the api
+  async function retryJob(id) {
+    setErr(null)
+    try {
+      const updated = await retryJobApi(id)
+      setJobs((prev) => prev.map((j) => (j.id === id ? mapJob(updated) : j)))
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'Could not retry job.')
+    }
   }
 
   return (
@@ -75,6 +65,10 @@ function JobsPage() {
       <p className="text-sm text-slate-500 mb-5">
         Showing {filtered.length} of {jobs.length} jobs.
       </p>
+
+      {err ? (
+        <div className="text-sm text-red-600 mb-4">{err}</div>
+      ) : null}
 
       <JobFilters
         status={status}
