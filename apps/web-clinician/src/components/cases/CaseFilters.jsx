@@ -21,7 +21,7 @@ function CaseFilters({ search, setSearch, status, setStatus }) {
         <option value="all">All statuses</option>
         <option value="review_pending">Review pending</option>
         <option value="reviewed">Reviewed</option>
-        <option value="needs_follow_up">Needs follow up</option>
+        <option value="rejected">Rejected</option>
       </select>
     </div>
   )

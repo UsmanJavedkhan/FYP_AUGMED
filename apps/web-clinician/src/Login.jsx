@@ -60,13 +60,13 @@ export function LoginScreen({ appName = 'Clinician' }) {
             {submitting ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
-        <div className="login-hint">
+        {/* <div className="login-hint">
           <strong>Demo accounts</strong>
           <div>admin@augmed.local</div>
           <div>clinician@augmed.local</div>
           <div>reviewer@augmed.local</div>
           <div className="muted">password: augmed123</div>
-        </div>
+        </div> */}
       </div>
     </div>
   )

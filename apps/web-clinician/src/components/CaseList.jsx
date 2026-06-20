@@ -59,7 +59,7 @@ function CaseList({ caseData, pickedId, onPick }) {
                     : formatDate(c.updated_at)}
                 </div>
               </div>
-              <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[0.72rem] font-semibold capitalize border ${getPillStyle(c.status)}`}>
+              <span className={`self-start shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[0.72rem] font-semibold capitalize border max-[480px]:px-2 max-[480px]:py-0.5 max-[480px]:text-[0.68rem] ${getPillStyle(c.status)}`}>
                 {c.status.replace(/_/g, ' ')}
               </span>
             </button>

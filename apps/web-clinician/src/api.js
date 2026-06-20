@@ -64,6 +64,14 @@ export async function fetchHealth() {
   return apiFetch('/health')
 }
 
+// Change the signed-in user's own password.
+export function changePassword({ currentPassword, newPassword }) {
+  return apiFetch('/auth/change-password', {
+    method: 'POST',
+    body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
+  })
+}
+
 export async function fetchCases() {
   const data = await apiFetch('/cases')
   return data.items
@@ -124,6 +132,28 @@ export async function generateSynthetic({ targetClass, count, seed, guidance }) 
     body: JSON.stringify(payload),
   })
   return data.items ?? []
+}
+
+// Synthetic gallery — generated images grouped by class for the Datasets page.
+// Returns: [{ class, label, model_available, count, images: [{ id, class, image_url }] }]
+export async function fetchSyntheticGallery() {
+  const data = await apiFetch('/synthetic/gallery')
+  return data.datasets ?? []
+}
+
+// Download every generated synthetic image as one combined ZIP.
+// Auth-gated route, so we attach the token and return a blob to save client-side.
+export async function downloadSyntheticDatasetZip() {
+  const token = getStoredToken()
+  const headers = {}
+  if (token) headers['Authorization'] = `Bearer ${token}`
+  const response = await fetch(`${API_BASE_URL}/synthetic/gallery/download`, { headers })
+  if (!response.ok) {
+    let detail = ''
+    try { detail = (await response.json())?.detail ?? '' } catch { /* ignore */ }
+    throw new Error(detail || 'Dataset download failed')
+  }
+  return response.blob()
 }
 
 export function exportCsvUrl(dateFrom, dateTo) {

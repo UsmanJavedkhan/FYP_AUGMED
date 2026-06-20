@@ -128,7 +128,7 @@ function SyntheticDataPage() {
             <select
               value={targetClass}
               onChange={(e) => setTargetClass(e.target.value)}
-              className="bg-[rgba(255,255,255,0.03)] border border-[rgba(148,163,184,0.14)] rounded-xl py-[11px] px-3.5 text-[#e6edf7] outline-none transition-all duration-150 focus:border-[rgba(94,234,212,0.55)]"
+              className="w-full min-w-0 bg-[rgba(255,255,255,0.03)] border border-[rgba(148,163,184,0.14)] rounded-xl py-[11px] px-3.5 text-[#e6edf7] outline-none transition-all duration-150 focus:border-[rgba(94,234,212,0.55)]"
             >
               {CLASS_OPTIONS.map((c) => (
                 <option key={c.value} value={c.value} disabled={!c.enabled}>{c.label}</option>
@@ -137,7 +137,7 @@ function SyntheticDataPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <div className="grid gap-1.5">
+            <div className="grid gap-1.5 min-w-0">
               <label className="text-[0.78rem] text-[#8a97b1] uppercase tracking-wider font-semibold">
                 Count
               </label>
@@ -147,10 +147,10 @@ function SyntheticDataPage() {
                 max={32}
                 value={count}
                 onChange={(e) => setCount(e.target.value)}
-                className="bg-[rgba(255,255,255,0.03)] border border-[rgba(148,163,184,0.14)] rounded-xl py-[11px] px-3.5 text-[#e6edf7] outline-none transition-all duration-150 focus:border-[rgba(94,234,212,0.55)]"
+                className="w-full min-w-0 bg-[rgba(255,255,255,0.03)] border border-[rgba(148,163,184,0.14)] rounded-xl py-[11px] px-3.5 text-[#e6edf7] outline-none transition-all duration-150 focus:border-[rgba(94,234,212,0.55)]"
               />
             </div>
-            <div className="grid gap-1.5">
+            <div className="grid gap-1.5 min-w-0">
               <label className="text-[0.78rem] text-[#8a97b1] uppercase tracking-wider font-semibold">
                 Seed
               </label>
@@ -159,12 +159,12 @@ function SyntheticDataPage() {
                 placeholder="random"
                 value={seed}
                 onChange={(e) => setSeed(e.target.value)}
-                className="bg-[rgba(255,255,255,0.03)] border border-[rgba(148,163,184,0.14)] rounded-xl py-[11px] px-3.5 text-[#e6edf7] outline-none transition-all duration-150 focus:border-[rgba(94,234,212,0.55)]"
+                className="w-full min-w-0 bg-[rgba(255,255,255,0.03)] border border-[rgba(148,163,184,0.14)] rounded-xl py-[11px] px-3.5 text-[#e6edf7] outline-none transition-all duration-150 focus:border-[rgba(94,234,212,0.55)]"
               />
             </div>
           </div>
 
-          <div className="grid gap-1.5">
+          {/* <div className="grid gap-1.5">
             <label className="text-[0.78rem] text-[#8a97b1] uppercase tracking-wider font-semibold">
               Guidance scale · {guidance}
             </label>
@@ -178,7 +178,7 @@ function SyntheticDataPage() {
               className="accent-[#5eead4]"
             />
             <div className="text-[0.75rem] text-[#6b7a96]">Lower = diverse · Higher = class-faithful</div>
-          </div>
+          </div> */}
 
           <button
             type="submit"

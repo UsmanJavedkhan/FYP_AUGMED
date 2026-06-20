@@ -1,33 +1,41 @@
-// change password form (just UI - no backend yet)
+// change password form — wired to POST /auth/change-password
 
 import { useState } from 'react'
+import { changePassword } from '../../api'
 
 function PasswordForm() {
-  // store the inputs
   const [oldPass, setOldPass] = useState('')
   const [newPass, setNewPass] = useState('')
   const [confirmPass, setConfirmPass] = useState('')
-  const [message, setMessage] = useState('')
+  const [status, setStatus] = useState(null) // { type: 'error' | 'success', text }
+  const [saving, setSaving] = useState(false)
 
-  // when user clicks save
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
+    setStatus(null)
 
-    // simple checks
+    // client-side checks before hitting the API
     if (newPass.length < 6) {
-      setMessage('Password must be at least 6 characters.')
+      setStatus({ type: 'error', text: 'New password must be at least 6 characters.' })
       return
     }
     if (newPass !== confirmPass) {
-      setMessage('New password and confirm do not match.')
+      setStatus({ type: 'error', text: 'New password and confirmation do not match.' })
       return
     }
 
-    // pretend it worked (no API call yet)
-    setMessage('Password change is not wired up yet.')
-    setOldPass('')
-    setNewPass('')
-    setConfirmPass('')
+    setSaving(true)
+    try {
+      await changePassword({ currentPassword: oldPass, newPassword: newPass })
+      setStatus({ type: 'success', text: 'Password updated successfully.' })
+      setOldPass('')
+      setNewPass('')
+      setConfirmPass('')
+    } catch (err) {
+      setStatus({ type: 'error', text: err instanceof Error ? err.message : 'Could not change password.' })
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -41,8 +49,10 @@ function PasswordForm() {
         <label className="block text-xs text-slate-400 mb-1">Current password</label>
         <input
           type="password"
+          autoComplete="current-password"
           value={oldPass}
           onChange={(e) => setOldPass(e.target.value)}
+          required
           className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white"
         />
       </div>
@@ -51,8 +61,10 @@ function PasswordForm() {
         <label className="block text-xs text-slate-400 mb-1">New password</label>
         <input
           type="password"
+          autoComplete="new-password"
           value={newPass}
           onChange={(e) => setNewPass(e.target.value)}
+          required
           className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white"
         />
       </div>
@@ -61,22 +73,27 @@ function PasswordForm() {
         <label className="block text-xs text-slate-400 mb-1">Confirm new password</label>
         <input
           type="password"
+          autoComplete="new-password"
           value={confirmPass}
           onChange={(e) => setConfirmPass(e.target.value)}
+          required
           className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white"
         />
       </div>
 
-      {/* message area */}
-      {message && (
-        <div className="text-xs text-yellow-400 mb-3">{message}</div>
+      {/* feedback message */}
+      {status && (
+        <div className={`text-xs mb-3 ${status.type === 'success' ? 'text-green-400' : 'text-red-400'}`}>
+          {status.text}
+        </div>
       )}
 
       <button
         type="submit"
-        className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm hover:bg-blue-700"
+        disabled={saving}
+        className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Save password
+        {saving ? 'Saving…' : 'Save password'}
       </button>
     </form>
   )

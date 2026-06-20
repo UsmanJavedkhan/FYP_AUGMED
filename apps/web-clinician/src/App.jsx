@@ -22,6 +22,7 @@ function App() {
 
   // main state stuff
   const [activePage, setActivePage] = useState('workspace')
+  const [menuOpen, setMenuOpen] = useState(false)
   const [apiHealth, setApiHealth] = useState(null)
   const [allCases, setAllCases] = useState([])
   const [pickedId, setPickedId] = useState(null)
@@ -151,16 +152,28 @@ function App() {
 
   return (
     <div className="grid grid-cols-[260px_1fr] min-h-screen max-[820px]:grid-cols-1">
-      <Sidebar activePage={activePage} onNavigate={setActivePage} />
+      <Sidebar
+        activePage={activePage}
+        onNavigate={(id) => {
+          setActivePage(id)
+          setMenuOpen(false)
+        }}
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        onLogout={logout}
+        user={user}
+      />
 
       <div className="flex flex-col min-w-0">
         <Topbar
           apiStatus={apiHealth?.status}
           userData={user}
           onLogout={logout}
+          onMenuToggle={() => setMenuOpen((v) => !v)}
+          activePage={activePage}
         />
 
-        <main className="p-7 px-9 pb-15 flex flex-col gap-6 max-[820px]:px-5">
+        <main className="p-7 px-9 pb-15 flex flex-col gap-6 max-[820px]:px-5 max-[480px]:p-4 max-[480px]:pb-10">
           {activePage === 'workspace' ? (
             <>
               {errMsg ? (

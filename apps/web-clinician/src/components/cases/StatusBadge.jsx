@@ -5,7 +5,7 @@ function StatusBadge({ status }) {
   let color = 'bg-slate-700 text-slate-200'
   if (status === 'review_pending') color = 'bg-yellow-700 text-yellow-100'
   if (status === 'reviewed') color = 'bg-green-700 text-green-100'
-  if (status === 'needs_follow_up') color = 'bg-red-700 text-red-100'
+  if (status === 'needs_follow_up' || status === 'rejected') color = 'bg-red-700 text-red-100'
 
   // turn review_pending -> review pending
   const text = status ? status.replace(/_/g, ' ') : 'unknown'

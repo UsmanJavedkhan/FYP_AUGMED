@@ -3,7 +3,6 @@
 import ProfileForm from '../components/settings/ProfileForm'
 import PasswordForm from '../components/settings/PasswordForm'
 import ThemeToggle from '../components/settings/ThemeToggle'
-import NotificationPrefs from '../components/settings/NotificationPrefs'
 
 function SettingsPage({ user }) {
   return (
@@ -18,7 +17,6 @@ function SettingsPage({ user }) {
         <ProfileForm user={user} />
         <PasswordForm />
         <ThemeToggle />
-        <NotificationPrefs />
       </div>
     </div>
   )

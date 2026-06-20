@@ -13,7 +13,7 @@ function StatsCards({ stats }) {
   ]
 
   return (
-    <section className="grid grid-cols-4 gap-4 max-[1160px]:grid-cols-2">
+    <section className="grid grid-cols-4 gap-4 max-[1160px]:grid-cols-2 max-[460px]:grid-cols-1">
       {boxes.map((box) => (
         <article
           key={box.title}
