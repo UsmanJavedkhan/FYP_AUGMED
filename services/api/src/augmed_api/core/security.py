@@ -13,7 +13,6 @@ import json
 import os
 import secrets
 from datetime import UTC, datetime, timedelta
-from typing import Iterable
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -147,7 +146,3 @@ def require_roles(*roles: str):
 
 def require_any_authenticated(user: User = Depends(get_current_user)) -> User:
     return user
-
-
-def any_role(*roles: str) -> Iterable[str]:
-    return roles
