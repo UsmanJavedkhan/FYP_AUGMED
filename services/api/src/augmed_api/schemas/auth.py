@@ -35,6 +35,7 @@ class UserCreate(BaseModel):
 
 class UserUpdate(BaseModel):
     full_name: str | None = Field(default=None, min_length=2, max_length=120)
+    email: str | None = Field(default=None, min_length=3, max_length=255)
     role: str | None = Field(default=None, pattern="^(admin|clinician|reviewer|researcher)$")
     password: str | None = Field(default=None, min_length=6, max_length=200)
     is_active: bool | None = None
@@ -42,3 +43,8 @@ class UserUpdate(BaseModel):
 
 class UserListResponse(BaseModel):
     items: list[UserRead]
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str = Field(min_length=1, max_length=200)
+    new_password: str = Field(min_length=6, max_length=200)

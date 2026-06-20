@@ -1,6 +1,17 @@
 from fastapi import APIRouter, Depends
 
-from augmed_api.api.routes import admin, auth, cases, health, synthetic, users
+from augmed_api.api.routes import (
+    admin,
+    audit,
+    auth,
+    cases,
+    datasets,
+    health,
+    jobs,
+    registry,
+    synthetic,
+    users,
+)
 from augmed_api.core.security import ROLE_ADMIN, require_roles, require_any_authenticated
 
 api_router = APIRouter()
@@ -21,6 +32,30 @@ api_router.include_router(
 api_router.include_router(
     admin.router,
     prefix="/admin",
+    tags=["admin"],
+    dependencies=[Depends(require_roles(ROLE_ADMIN))],
+)
+api_router.include_router(
+    datasets.router,
+    prefix="/admin/datasets",
+    tags=["admin"],
+    dependencies=[Depends(require_roles(ROLE_ADMIN))],
+)
+api_router.include_router(
+    registry.router,
+    prefix="/admin/models",
+    tags=["admin"],
+    dependencies=[Depends(require_roles(ROLE_ADMIN))],
+)
+api_router.include_router(
+    jobs.router,
+    prefix="/admin/jobs",
+    tags=["admin"],
+    dependencies=[Depends(require_roles(ROLE_ADMIN))],
+)
+api_router.include_router(
+    audit.router,
+    prefix="/admin/audit",
     tags=["admin"],
     dependencies=[Depends(require_roles(ROLE_ADMIN))],
 )

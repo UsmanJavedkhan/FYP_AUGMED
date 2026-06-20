@@ -18,9 +18,6 @@ logger = logging.getLogger(__name__)
 def generate_gradcam(source: Path, destination: Path) -> None:
     """Generate a Grad-CAM heatmap overlay and save it as a PNG.
 
-    The heatmap is produced by running Grad-CAM on the last dense block of
-    the TorchXRayVision DenseNet121 model, targeting the class with the
-    highest predicted probability.
     """
     model = get_model()
     tensor = preprocess_image(source)

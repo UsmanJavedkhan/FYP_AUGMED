@@ -149,3 +149,55 @@ class Report(Base):
     generated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     case: Mapped[Case] = relationship(back_populates="reports")
+
+
+class Dataset(Base, TimestampMixin):
+    """A dataset registered in the admin Datasets page."""
+
+    __tablename__ = "datasets"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(150))
+    source: Mapped[str] = mapped_column(String(120))
+    source_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    item_count: Mapped[int] = mapped_column(Integer, default=0)
+    status: Mapped[str] = mapped_column(String(50), default="active")
+
+
+class ModelVersion(Base):
+    """A model version tracked in the admin Model Registry page."""
+
+    __tablename__ = "model_versions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(120))
+    version: Mapped[str] = mapped_column(String(40))
+    framework: Mapped[str] = mapped_column(String(60), default="PyTorch")
+    accuracy: Mapped[float] = mapped_column(Float, default=0.0)
+    status: Mapped[str] = mapped_column(String(40), default="archived")  # active | archived | training
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+
+
+class Job(Base):
+    """A background job shown in the admin Background Jobs page."""
+
+    __tablename__ = "jobs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(200))
+    type: Mapped[str] = mapped_column(String(40))  # inference | training | synthetic | report
+    status: Mapped[str] = mapped_column(String(40), default="queued")  # queued | running | completed | failed
+    progress: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+
+
+class AuditLog(Base):
+    """An audit trail entry shown in the admin Audit Logs page."""
+
+    __tablename__ = "audit_logs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    actor: Mapped[str] = mapped_column(String(255))
+    action: Mapped[str] = mapped_column(String(60))  # login | upload | review | report | user_change
+    target: Mapped[str] = mapped_column(String(255), default="-")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))

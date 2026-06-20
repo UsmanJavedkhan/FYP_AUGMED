@@ -1,7 +1,5 @@
 """Orchestrator that runs the full ML pipeline: classify, enhance, grad-cam.
 
-Falls back to the Pillow-based placeholders when ML deps are unavailable,
-so the app still boots and works in pure-demo mode.
 """
 from __future__ import annotations
 
@@ -47,9 +45,6 @@ def run(
     filename: str = "",
 ) -> PipelineResult:
     """Run the full inference + enhancement + heatmap pipeline on *source*.
-
-    Returns metadata about the results. The actual image artifacts are written
-    to *enhanced_dest* and *heatmap_dest*.
     """
     if _check_ml():
         return _run_real(source, enhanced_dest, heatmap_dest)

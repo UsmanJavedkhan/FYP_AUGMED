@@ -1,10 +1,4 @@
 """Lightweight imaging utilities for the local AugMed prototype.
-
-These helpers produce the 'enhanced' and 'heatmap' artifacts that accompany
-every uploaded chest X-ray in the demo pipeline. They intentionally avoid
-heavy ML dependencies (torch, opencv) so the local dev loop stays fast.
-The outputs are illustrative placeholders for the real enhancement and
-Grad-CAM modules that will replace them later.
 """
 from __future__ import annotations
 

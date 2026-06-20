@@ -13,6 +13,7 @@ from augmed_api.core.database import engine
 _EXPECTED_COLUMNS: list[tuple[str, str, str]] = [
     ("users", "password_hash", "VARCHAR(255)"),
     ("users", "last_login_at", "DATETIME"),
+    ("datasets", "source_url", "VARCHAR(500)"),
 ]
 
 

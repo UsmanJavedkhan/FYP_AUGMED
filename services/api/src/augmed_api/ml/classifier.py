@@ -1,14 +1,4 @@
 """Chest X-ray classifier using TorchXRayVision DenseNet121.
-
-Lazy-loads the model on first call so the server boots fast even when
-the weights haven't been downloaded yet.
-
-Classification strategy
------------------------
-1. Run DenseNet121 to get 18 pathology probabilities.
-2. If overall abnormality is below threshold → Healthy.
-3. If abnormal, use the TB discriminator (logistic regression on the 18
-   pathology scores) to distinguish TB from Pneumonia.
 """
 from __future__ import annotations
 

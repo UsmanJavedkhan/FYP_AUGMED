@@ -11,8 +11,10 @@ from PIL import Image, UnidentifiedImageError
 from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 
+from augmed_api.core.activity import record_audit, record_job
 from augmed_api.core.config import settings
 from augmed_api.core.database import get_db
+from augmed_api.core.security import get_current_user
 from augmed_api.core.storage import ensure_storage_directories, storage_url_for
 from augmed_api.ml.pipeline import run as run_ml_pipeline
 from augmed_api.models.entities import (
@@ -23,6 +25,7 @@ from augmed_api.models.entities import (
     Prediction,
     Report,
     UploadedImage,
+    User,
 )
 from augmed_api.schemas.case import CaseDetail, CaseListResponse, CaseResponse, ReviewRequest
 
@@ -198,6 +201,7 @@ async def upload_case(
     patient_reference: str | None = Form(default=None),
     notes: str | None = Form(default=None),
     db: Session = Depends(get_db),
+    current: User = Depends(get_current_user),
 ) -> CaseResponse:
     if file.content_type not in ALLOWED_IMAGE_TYPES:
         raise HTTPException(
@@ -295,12 +299,19 @@ async def upload_case(
             generated_at=None,
         )
     )
+    record_audit(db, actor=current.email, action="upload", target=case_id)
+    record_job(db, name=f"Inference {case_id[:8]}", type="inference", status="completed", progress=100)
     db.commit()
     return get_case(case_id=case_id, db=db)
 
 
 @router.post("/{case_id}/review", response_model=CaseResponse)
-def submit_review(case_id: str, payload: ReviewRequest, db: Session = Depends(get_db)) -> CaseResponse:
+def submit_review(
+    case_id: str,
+    payload: ReviewRequest,
+    db: Session = Depends(get_db),
+    current: User = Depends(get_current_user),
+) -> CaseResponse:
     case = db.scalars(select(Case).where(Case.id == case_id)).first()
     if not case:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Case not found.")
@@ -315,14 +326,19 @@ def submit_review(case_id: str, payload: ReviewRequest, db: Session = Depends(ge
             reviewed_at=datetime.now(UTC),
         )
     )
-    case.status = "reviewed" if payload.decision == "approved" else "needs_follow_up"
+    case.status = "reviewed" if payload.decision == "approved" else "rejected"
     case.updated_at = datetime.now(UTC)
+    record_audit(db, actor=current.email, action="review", target=case_id)
     db.commit()
     return get_case(case_id=case_id, db=db)
 
 
 @router.post("/{case_id}/report")
-def generate_report(case_id: str, db: Session = Depends(get_db)):
+def generate_report(
+    case_id: str,
+    db: Session = Depends(get_db),
+    current: User = Depends(get_current_user),
+):
     """Generate (or regenerate) the PDF report for a case and return it."""
     from augmed_api.core.reports import generate_pdf_report
 
@@ -388,6 +404,8 @@ def generate_report(case_id: str, db: Session = Depends(get_db)):
 
     report_row.status = "generated"
     report_row.generated_at = datetime.now(UTC)
+    record_audit(db, actor=current.email, action="report", target=case_id)
+    record_job(db, name=f"PDF report {case_id[:8]}", type="report", status="completed", progress=100)
     db.commit()
 
     return FileResponse(

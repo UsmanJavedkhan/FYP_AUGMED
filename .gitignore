@@ -40,9 +40,11 @@ storage/augmed.db
 storage/uploads/*
 storage/artifacts/*
 storage/reports/*
+storage/synthetic/*
 !storage/uploads/.gitkeep
 !storage/artifacts/.gitkeep
 !storage/reports/.gitkeep
+!storage/synthetic/.gitkeep
 
 # Coverage
 .coverage

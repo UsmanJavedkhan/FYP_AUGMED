@@ -1,30 +1,5 @@
 """DCGAN generator for synthetic *normal* chest X-rays.
 
-The bundled checkpoint at ``services/api/models/checkpoints/normal_xray_generator.pt``
-was trained on the NORMAL split of the project's chest X-ray dataset to
-produce 128x128 grayscale images of healthy patients. It does not model
-pathology — requests for Pneumonia/Tuberculosis/etc. are rejected at the
-API layer.
-
-Architecture mirrors the training notebook (`Training_PyTorch.ipynb`):
-
-    fc:
-        Linear(100, 16384, bias=False)
-        BatchNorm1d(16384)
-        LeakyReLU(0.2, inplace=True)      # reshape to (B, 256, 8, 8)
-    conv_blocks:
-        ConvTranspose2d(256, 128, 4, 2, 1)   # 8  -> 16
-        BatchNorm2d(128); LeakyReLU(0.2)
-        ConvTranspose2d(128,  64, 4, 2, 1)   # 16 -> 32
-        BatchNorm2d(64);  LeakyReLU(0.2)
-        ConvTranspose2d( 64,  32, 4, 2, 1)   # 32 -> 64
-        BatchNorm2d(32);  LeakyReLU(0.2)
-        ConvTranspose2d( 32,  16, 4, 2, 1)   # 64 -> 128
-        BatchNorm2d(16);  LeakyReLU(0.2)
-        ConvTranspose2d( 16,   1, 4, 1, 1)   # 128 -> ~130  (cropped to 128)
-        Tanh()
-
-Output range is [-1, 1]; we rescale to [0, 255] uint8 PNGs.
 """
 from __future__ import annotations
 
