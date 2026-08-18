@@ -14,7 +14,7 @@ function Topbar({ apiStatus, userData, onLogout, onMenuToggle, activePage = 'wor
   const { title, subtitle } = PAGE_META[activePage] ?? PAGE_META.workspace
 
   return (
-    <header className="app-topbar flex items-center justify-between gap-4 px-9 py-5 border-b border-[rgba(148,163,184,0.14)] backdrop-blur-sm bg-[rgba(7,11,20,0.55)] sticky top-0 z-10 max-[820px]:px-5">
+    <header className="app-topbar flex items-center justify-between gap-4 px-9 py-5 border-b border-[rgba(148,163,184,0.14)] backdrop-blur-sm  sticky top-0 z-10 max-[820px]:px-5">
       <div className="flex items-center gap-3 min-w-0">
         {/* hamburger — opens the nav drawer on small screens */}
         <button

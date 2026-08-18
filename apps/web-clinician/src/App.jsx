@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { exportCsvUrl, fetchCase, fetchCases, fetchHealth, generateReport, submitReview, uploadCase } from './api'
+import { fetchCase, fetchCases, fetchHealth, generateReport, submitReview, uploadCase } from './api'
 import { useAuth } from './auth'
 
 // our components
@@ -16,7 +16,6 @@ import CasesPage from './pages/CasesPage'
 import ReportsPage from './pages/ReportsPage'
 import SettingsPage from './pages/SettingsPage'
 import DatasetsPage from './pages/DatasetsPage'
-
 function App() {
   const { user, logout } = useAuth()
 
@@ -118,11 +117,6 @@ function App() {
     }
   }
 
-  function doExportCsv() {
-    const url = exportCsvUrl()
-    window.open(url, '_blank')
-  }
-
   // download report by case id (used from Reports page)
   async function doDownloadReportById(caseId) {
     setErrMsg(null)
@@ -202,7 +196,6 @@ function App() {
                     caseData={allCases}
                     pickedId={pickedId}
                     onPick={setPickedId}
-                    onExport={doExportCsv}
                   />
 
                   <ReviewForm
@@ -229,8 +222,12 @@ function App() {
 
           {activePage === 'settings' ? <SettingsPage user={user} /> : null}
         </main>
+      
       </div>
     </div>
+    
+
+    
   )
 }
 

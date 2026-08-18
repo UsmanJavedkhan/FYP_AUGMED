@@ -1,8 +1,8 @@
 """Synthetic chest X-ray generation endpoints.
 
-The bundled checkpoint only generates *normal* (Healthy) X-rays — pneumonia,
-TB, COVID-19 etc. are not modelled. Requests for any other target class are
-rejected here with a 400.
+Each class (Healthy / Tuberculosis / Pneumonia) has its own trained DCGAN
+generator; requests are dispatched to the matching model. Unsupported classes
+are rejected with a 400.
 """
 from __future__ import annotations
 
@@ -22,15 +22,13 @@ from augmed_api.core.storage import ensure_storage_directories, storage_url_for
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
-SUPPORTED_CLASSES = {"Healthy", "Normal"}
-
-# Dataset buckets surfaced on the clinician Datasets page. Only Healthy has a
-# trained GAN today; TB and Pneumonia are placeholders until their models land.
-# `aliases` are the filename tokens (synthetic-<token>-<hex>.png) that map here.
+# Dataset buckets surfaced on the clinician Datasets page. All three classes
+# now have a trained GAN. `aliases` are the filename tokens
+# (synthetic-<token>-<hex>.png) that map an image to this bucket.
 CLASS_DATASETS = [
     {"key": "Healthy", "label": "Healthy", "aliases": ("normal", "healthy"), "model_available": True},
-    {"key": "Pneumonia", "label": "Pneumonia", "aliases": ("pneumonia", "pneu"), "model_available": False},
-    {"key": "Tuberculosis", "label": "Tuberculosis", "aliases": ("tb", "tuberculosis"), "model_available": False},
+    {"key": "Pneumonia", "label": "Pneumonia", "aliases": ("pneumonia", "pneu"), "model_available": True},
+    {"key": "Tuberculosis", "label": "Tuberculosis", "aliases": ("tb", "tuberculosis"), "model_available": True},
 ]
 
 # filename token (synthetic-<token>-<hex>.png) -> dataset class key
@@ -71,26 +69,23 @@ class GenerateResponse(BaseModel):
 
 @router.post("/generate", response_model=GenerateResponse)
 def generate(payload: GenerateRequest, db: Session = Depends(get_db)) -> GenerateResponse:
-    if payload.target_class not in SUPPORTED_CLASSES:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=(
-                f"This generator only produces normal/healthy chest X-rays. "
-                f"Requested class '{payload.target_class}' is not supported."
-            ),
-        )
-
     try:
-        from augmed_api.ml.synth_generator import generate_normal_xrays
+        from augmed_api.ml.synth_generator import generate_xrays, normalise_class
     except ImportError as exc:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail=f"Generator dependencies not installed: {exc}",
         ) from exc
 
+    try:
+        class_label = normalise_class(payload.target_class)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+
     paths = ensure_storage_directories()
     try:
-        results = generate_normal_xrays(
+        results = generate_xrays(
+            class_label,
             count=payload.count,
             output_dir=paths.synthetic,
             seed=payload.seed,
@@ -110,7 +105,7 @@ def generate(payload: GenerateRequest, db: Session = Depends(get_db)) -> Generat
     items = [
         GenerateItem(
             id=r.storage_path.stem,
-            **{"class": "Healthy"},
+            **{"class": class_label},
             seed=r.seed,
             quality_score=r.quality_score,
             image_url=storage_url_for(r.storage_path),
@@ -121,7 +116,7 @@ def generate(payload: GenerateRequest, db: Session = Depends(get_db)) -> Generat
 
     record_job(
         db,
-        name=f"Synthetic batch ({len(items)} images)",
+        name=f"Synthetic {class_label} batch ({len(items)} images)",
         type="synthetic",
         status="completed",
         progress=100,
@@ -130,8 +125,8 @@ def generate(payload: GenerateRequest, db: Session = Depends(get_db)) -> Generat
 
     return GenerateResponse(
         items=items,
-        model_name="Normal CXR DCGAN",
-        model_version="v1-128x128-grayscale",
+        model_name=f"{class_label} CXR DCGAN",
+        model_version="v2-128x128-grayscale",
     )
 
 

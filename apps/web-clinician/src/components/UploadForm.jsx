@@ -100,6 +100,7 @@ function UploadForm({ onUpload, setErr }) {
         >
           {uploading ? 'Processing…' : 'Upload & classify'}
         </button>
+        
       </div>
     </form>
   )

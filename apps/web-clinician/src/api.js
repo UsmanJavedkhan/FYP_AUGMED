@@ -2,7 +2,7 @@ import { clearStoredToken, getStoredToken } from './auth'
 
 const RAW_BASE = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '') ?? 'http://127.0.0.1:8000/api/v1'
 
-export const API_BASE_URL = RAW_BASE
+const API_BASE_URL = RAW_BASE
 export const API_ORIGIN = RAW_BASE.replace(/\/api\/v\d+$/, '')
 
 export function resolveStorageUrl(path) {
@@ -154,12 +154,4 @@ export async function downloadSyntheticDatasetZip() {
     throw new Error(detail || 'Dataset download failed')
   }
   return response.blob()
-}
-
-export function exportCsvUrl(dateFrom, dateTo) {
-  const params = new URLSearchParams()
-  if (dateFrom) params.set('date_from', dateFrom)
-  if (dateTo) params.set('date_to', dateTo)
-  const qs = params.toString()
-  return `${API_BASE_URL}/cases/export/csv${qs ? `?${qs}` : ''}`
 }

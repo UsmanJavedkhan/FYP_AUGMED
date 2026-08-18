@@ -77,6 +77,7 @@ function CaseViewer({ caseDetail, isLoading, onDownloadReport, downloading }) {
             { key: 'original', text: 'Original', off: false },
             { key: 'enhanced', text: 'Enhanced', off: !enhUrl },
             { key: 'heatmap', text: 'Grad-CAM', off: !heatUrl },
+            
           ].map((tab) => (
             <button
               key={tab.key}

@@ -1,7 +1,7 @@
 import { clearStoredToken, getStoredToken } from './auth'
 
 const RAW_BASE = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '') ?? 'http://127.0.0.1:8000/api/v1'
-export const API_BASE_URL = RAW_BASE
+const API_BASE_URL = RAW_BASE
 
 async function apiFetch(path, init, explicitToken) {
   const token = explicitToken ?? getStoredToken()

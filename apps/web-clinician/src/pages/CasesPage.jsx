@@ -4,7 +4,7 @@ import { useState } from 'react'
 import CaseFilters from '../components/cases/CaseFilters'
 import CaseTable from '../components/cases/CaseTable'
 
-function CasesPage({ cases }) {
+ export function CasesPage({ cases }) {
   // filter state
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('all')

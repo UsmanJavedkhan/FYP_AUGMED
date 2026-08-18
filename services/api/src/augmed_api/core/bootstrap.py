@@ -190,16 +190,19 @@ _SEED_MODELS = [
     # (name, version, framework, accuracy, status)
     ("TorchXRayVision DenseNet121", "densenet121-res224-all", "PyTorch / TorchXRayVision", 0.0, "active"),
     ("CXR 3-class Discriminator", "logreg-v1", "scikit-learn", 0.0, "active"),
-    ("Normal CXR DCGAN", "v1-128x128-grayscale", "PyTorch (DCGAN)", 0.0, "active"),
+    ("Healthy CXR DCGAN", "v2-128x128", "PyTorch (DCGAN)", 0.0, "active"),
+    ("Tuberculosis CXR DCGAN", "v2-128x128", "PyTorch (DCGAN)", 0.0, "active"),
+    ("Pneumonia CXR DCGAN", "v2-128x128", "PyTorch (DCGAN)", 0.0, "active"),
 ]
 
-# Fictional placeholder models from earlier seeds — removed on startup so the
-# registry only shows the real stack.
+# Fictional placeholders + the superseded single GAN — removed on startup so
+# the registry only shows the real stack.
 _LEGACY_MODELS = [
     ("DenseNet121-CXR", "v1.0"),
     ("DenseNet121-CXR", "v0.9"),
     ("ResNet50-CXR", "v0.5"),
     ("EfficientNet-B0", "v0.1"),
+    ("Normal CXR DCGAN", "v1-128x128-grayscale"),
 ]
 
 # Placeholder jobs from earlier seeds — removed on startup so the Jobs page

@@ -17,6 +17,21 @@ dependencies = [
   "pillow>=11.2,<12.0"
 ]
 
+# Machine-learning stack: real CXR classifier (TorchXRayVision DenseNet121 +
+# scikit-learn 3-class discriminator) and the DCGAN generators. Without these
+# the pipeline silently falls back to a filename-based placeholder, so install
+# the `ml` extra for real inference:  pip install -e ".[ml]"
+[project.optional-dependencies]
+ml = [
+  "torch>=2.2",
+  "torchvision>=0.17",
+  "numpy>=1.26",
+  "torchxrayvision>=1.3",
+  "scikit-learn>=1.4",
+  "opencv-python>=4.9",
+  "grad-cam>=1.5",
+]
+
 [tool.setuptools]
 package-dir = {"" = "src"}
 

@@ -15,9 +15,12 @@ function Topbar({ title, subtitle, apiStatus, userData, onLogout }) {
             className="w-[7px] h-[7px] rounded-full"
             style={{
               background: apiStatus ? '#10b981' : '#ef4444',
+              
               boxShadow: apiStatus
                 ? '0 0 0 4px rgba(16,185,129,0.15)'
                 : '0 0 0 4px rgba(239,68,68,0.15)',
+           
+
             }}
           />
           API <strong className="text-[#0f172a] font-semibold">{apiStatus ?? 'offline'}</strong>

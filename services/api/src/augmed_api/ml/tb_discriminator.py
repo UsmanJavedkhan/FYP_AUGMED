@@ -106,10 +106,3 @@ def classify_3class(raw_scores: dict[str, float], pathology_order: list[str]) ->
     )
 
     return label, confidence
-
-
-# Keep backward compat for the old interface name
-def discriminate_tb_vs_pneumonia(raw_scores: dict[str, float], pathology_order: list[str]) -> str:
-    """Legacy interface — returns just the label."""
-    label, _ = classify_3class(raw_scores, pathology_order)
-    return label

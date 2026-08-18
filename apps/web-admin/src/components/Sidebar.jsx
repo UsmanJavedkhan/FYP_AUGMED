@@ -6,6 +6,7 @@ const navItems = [
   { id: 'models', label: 'Model Registry' },
   { id: 'jobs', label: 'Operations History'},
   { id: 'audit', label: 'Audit Logs'},
+ 
 ]
 
 function Sidebar({ activePage, onNavigate }) {

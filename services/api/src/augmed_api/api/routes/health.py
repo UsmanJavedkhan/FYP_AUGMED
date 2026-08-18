@@ -12,7 +12,7 @@ router = APIRouter()
 def get_health(db: Session = Depends(get_db)) -> dict[str, object]:
     db.execute(text("SELECT 1"))
     return {
-        "status": "ready",
+        "status": "Ready",
         "database": "connected",
         "storage": storage_summary(),
     }

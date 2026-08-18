@@ -45,6 +45,7 @@ function App() {
     models: { title: 'Model Registry', subtitle: 'Track model versions, accuracy, and which one is active.' },
     jobs: { title: 'Operations History', subtitle: 'A log of completed ML operations — inference, synthetic generation, and reports.' },
     audit: { title: 'Audit Logs', subtitle: 'Audit trail of every action taken in AugMed.' },
+   
   }
   const titleData = titles[activePage] || titles.overview
 

@@ -1,6 +1,5 @@
 // Datasets page — synthetic X-rays grouped by class (Healthy / Pneumonia / TB).
-// Each class is one GAN dataset; selecting it shows the images that model has
-// generated. Only the Healthy GAN exists today — TB & Pneumonia are upcoming.
+
 
 import { useEffect, useState } from 'react'
 import { fetchSyntheticGallery, resolveStorageUrl, downloadSyntheticDatasetZip } from '../api'

@@ -4,9 +4,8 @@ import { generateSynthetic, resolveStorageUrl } from '../api'
 
 const CLASS_OPTIONS = [
   { value: 'Healthy', label: 'Healthy', enabled: true },
-  { value: 'Pneumonia', label: 'Pneumonia (no model)', enabled: false },
-  { value: 'Tuberculosis', label: 'Tuberculosis (no model)', enabled: false },
- 
+  { value: 'Pneumonia', label: 'Pneumonia', enabled: true },
+  { value: 'Tuberculosis', label: 'Tuberculosis', enabled: true },
 ]
 
 const CLASS_TONE = {

@@ -23,6 +23,7 @@ function StatsCards({ stats }) {
           <div className="text-[0.78rem] text-[#8a97b1] uppercase tracking-widest">{box.title}</div>
           <div className="text-[2rem] font-bold mt-2 tracking-tight">{box.val}</div>
           <div className="text-[0.8rem] text-[#5f6d87] mt-1.5">{box.desc}</div>
+     
         </article>
       ))}
     </section>
